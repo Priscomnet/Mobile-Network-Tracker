@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Priscom Net-Tech - Network Intelligence</title>
+    
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+
+    <div class="app-layout">
+        
+        <!-- SIDE NAVIGATION BAR -->
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="logo-icon">P</div>
+                <div class="brand-text">
+                    <h2>PRISCOM</h2>
+                    <span>NET-TECH</span>
+                    <p>Measure. Analyze. Connect Better.</p>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active"><i class="fa-solid fa-house"></i> Dashboard</a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-tower-cell"></i> Current Connection</a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-tower-broadcast"></i> Nearby Towers</a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-compass"></i> Best Network Direction</a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-gauge-high"></i> Speed Test</a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-chart-pie"></i> Data Usage</a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-map-location-dot"></i> Network Map</a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i> History & Logs</a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-sim-card"></i> SIM Comparison</a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-gear"></i> Settings</a>
+                <a href="#" class="nav-item"><i class="fa-solid fa-circle-info"></i> About Priscom</a>
+            </nav>
+
+            <div class="device-status-card">
+                <div class="status-header">
+                    <span>PRISCOM DEVICE</span>
+                    <span class="status-indicator active">● Active</span>
+                </div>
+                <div class="status-row"><span>GPS Accuracy</span><strong id="sb-gps-acc">5 m</strong></div>
+                <div class="status-row"><span>Last Update</span><strong id="sb-last-updated">09:41:30</strong></div>
+                <div class="status-row"><span>Data Collection</span><strong class="text-green">Running</strong></div>
+            </div>
+        </aside>
+
+        <!-- MAIN DASHBOARD CONTENT -->
+        <main class="main-content">
+            
+            <!-- TOP APP BAR -->
+            <header class="top-bar">
+                <div class="header-title">
+                    <i class="fa-solid fa-bars menu-toggle"></i>
+                    <div>
+                        <h1>PRISCOM <span>NET-TECH</span></h1>
+                        <p>Network Intelligence. Better Decisions.</p>
+                    </div>
+                </div>
+                <div class="system-status">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <i class="fa-solid fa-signal"></i>
+                    <span id="top-net-tech" class="badge-tech">4G</span>
+                    <i class="fa-solid fa-bell notification-icon"></i>
+                </div>
+            </header>
+
+            <div class="dashboard-grid">
+
+                <!-- COLUMN 1: CURRENT CONNECTION & SERVING CELL -->
+                <div class="grid-column">
+                    
+                    <!-- Current Connection Card -->
+                    <section class="card">
+                        <div class="card-title">CURRENT CONNECTION</div>
+                        <div class="operator-banner">
+                            <div id="val-operator-logo" class="operator-logo">MTN</div>
+                            <div class="operator-details">
+                                <h3 id="val-operator-title">MTN Uganda <span class="tag" id="val-net-type-tag">4G LTE</span></h3>
+                                <p class="text-green">Connected • Serving Cell</p>
+                            </div>
+                            <div class="signal-gauge">
+                                <span class="gauge-value"><span id="val-rsrp">-87</span> <small>dBm</small></span>
+                                <div class="signal-bars" id="dynamic-signal-bars">
+                                    <span class="bar fill"></span><span class="bar fill"></span>
+                                    <span class="bar fill"></span><span class="bar fill"></span>
+                                    <span class="bar"></span>
+                                </div>
+                                <span id="val-signal-rating" class="gauge-label text-green">Good</span>
+                            </div>
+                        </div>
+
+                        <div class="metrics-quad">
+                            <div class="metric-box"><label>RSRP</label><div><span id="val-rsrp-sub">-87</span> <span>dBm</span></div></div>
+                            <div class="metric-box"><label>RSRQ</label><div><span id="val-rsrq">-11</span> <span>dB</span></div></div>
+                            <div class="metric-box"><label>SINR</label><div><span id="val-sinr">16</span> <span>dB</span></div></div>
+                            <div class="metric-box"><label>Band / Freq.</label><div id="val-band" class="text-blue">B20 / 800 MHz</div></div>
+                            <div class="metric-box"><label>Latency</label><div><span id="val-latency">42</span> <span>ms</span></div></div>
+                            <div class="metric-box"><label>Download</label><div><span id="val-dl-speed">18.6</span> <span>Mbps</span></div></div>
+                            <div class="metric-box"><label>Upload</label><div><span id="val-ul-speed">7.2</span> <span>Mbps</span></div></div>
+                            <div class="metric-box"><label>Packet Loss</label><div><span id="val-packet-loss">0.6</span> <span>%</span></div></div>
+                        </div>
+                    </section>
+
+                    <!-- Serving Cell Details Card -->
+                    <section class="card">
+                        <div class="card-title">CURRENT CELL (SERVING)</div>
+                        <div class="cell-info-header">
+                            <i class="fa-solid fa-tower-cell tower-icon"></i>
+                            <div>
+                                <small>Cell / Tower Name</small>
+                                <h4 id="val-tower-name">MTN – Kampala Central</h4>
+                            </div>
+                        </div>
+                        <div class="metrics-trio">
+                            <div><label>Cell ID</label><span id="val-cell-id">12345678</span></div>
+                            <div><label>eNodeB ID</label><span id="val-enodeb">4821</span></div>
+                            <div><label>PCI</label><span id="val-pci">321</span></div>
+                        </div>
+                        <div class="location-bar">
+                            <div><label>Tower Location</label><a href="#" id="val-tower-coords" class="link-blue">0.3136° N, 32.5811° E <i class="fa-solid fa-location-arrow"></i></a></div>
+                            <div><label>Distance from you</label><span id="val-tower-dist">1.2 km</span></div>
+                            <div><label>Direction</label><span id="val-tower-dir">NE (45°)</span></div>
+                        </div>
+                        <button class="btn btn-outline-blue"><i class="fa-solid fa-map"></i> VIEW ON MAP <i class="fa-solid fa-chevron-right"></i></button>
+                    </section>
+
+                </div>
+
+                <!-- COLUMN 2: DIRECTION & MAP ROUTING -->
+                <div class="grid-column">
+                    
+                    <section class="card card-purple-border">
+                        <div class="card-title text-purple">BEST NETWORK DIRECTION</div>
+                        <div class="alert-box-purple">
+                            <i class="fa-solid fa-circle-nodes"></i>
+                            <div>
+                                <strong>Better network detected!</strong>
+                                <p>Move towards the direction below</p>
+                            </div>
+                        </div>
+
+                        <div class="compass-section">
+                            <div class="bearing-info">
+                                <span id="val-compass-tag" class="bearing-tag">ENE</span>
+                                <span id="val-compass-angle" class="bearing-angle">65°</span>
+                            </div>
+                            <div class="compass-graphic">
+                                <div id="compass-arrow-element" class="compass-arrow-ne">➤</div>
+                            </div>
+                            <div class="distance-info">
+                                <label>Distance</label>
+                                <div><span id="val-target-dist">800</span> <span>m</span></div>
+                                <label>Walk time</label>
+                                <div><i class="fa-solid fa-person-walking"></i> ~<span id="val-walk-time">5</span> <span>min</span></div>
+                            </div>
+                        </div>
+
+                        <!-- Direction Comparison Grid -->
+                        <div class="comparison-grid">
+                            <div class="comp-column">
+                                <span class="comp-label text-red">Current (Here)</span>
+                                <div class="comp-row"><label>Signal</label><strong id="comp-cur-sig">-87 dBm</strong></div>
+                                <div class="comp-row"><label>Download</label><strong id="comp-cur-dl">18.6 Mbps</strong></div>
+                                <div class="comp-row"><label>Latency</label><strong id="comp-cur-lat">42 ms</strong></div>
+                            </div>
+                            <div class="comp-arrow">➔<br>➔<br>➔</div>
+                            <div class="comp-column">
+                                <span class="comp-label text-green">Best Direction</span>
+                                <div class="comp-row"><label>Signal</label><strong id="comp-opt-sig" class="text-green">-75 dBm</strong></div>
+                                <div class="comp-row"><label>Download</label><strong id="comp-opt-dl" class="text-green">32.4 Mbps</strong></div>
+                                <div class="comp-row"><label>Latency</label><strong id="comp-opt-lat" class="text-green">34 ms</strong></div>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-purple" onclick="runActiveSpeedTest()"><i class="fa-solid fa-location-arrow"></i> NAVIGATE TO BETTER NETWORK</button>
+                    </section>
+
+                </div>
+
+            </div>
+
+            <!-- LOWER TIERS: DETAILS, NEARBY LIST & COVERAGE MAP -->
+            <div class="dashboard-grid bottom-row">
+                
+                <!-- Tower Details Panel -->
+                <section class="card panel">
+                    <div class="panel-header">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <h3>Tower Details</h3>
+                        <div><i class="fa-solid fa-share-nodes"></i> <i class="fa-solid fa-star"></i></div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="cell-info-header">
+                            <i class="fa-solid fa-tower-cell text-green"></i>
+                            <div>
+                                <h4 id="val-dt-tower-name">MTN – Kampala Central</h4>
+                                <p><span id="val-dt-operator">MTN Uganda</span> • <span id="val-dt-tech" class="text-green">4G LTE</span></p>
+                                <span class="badge-serving">Serving Cell</span>
+                            </div>
+                        </div>
+                        <div class="detail-list">
+                            <div class="detail-item"><label>Cell / Tower Name</label><span id="val-dt-name">MTN – Kampala Central</span></div>
+                            <div class="detail-item"><label>Cell ID</label><span id="val-dt-cellid">12345678</span></div>
+                            <div class="detail-item"><label>eNodeB ID</label><span id="val-dt-enodeb">4821</span></div>
+                            <div class="detail-item"><label>PCI</label><span id="val-dt-pci">321</span></div>
+                            <div class="detail-item"><label>LAC / TAC</label><span id="val-dt-lac">6203 / 15</span></div>
+                            <div class="detail-item"><label>Band / Frequency</label><span id="val-dt-band">B20 / 800 MHz</span></div>
+                            <div class="detail-item"><label>Technology</label><span id="val-dt-tech-sub">4G LTE</span></div>
+                            <div class="detail-item"><label>MCC / MNC</label><span id="val-dt-mccmnc">641 / 10</span></div>
+                        </div>
+                        <button class="btn btn-outline-blue mt-12"><i class="fa-solid fa-map-location-dot"></i> VIEW TOWER ON MAP</button>
+                    </div>
+                </section>
+
+                <!-- Nearby Towers List -->
+                <section class="card panel">
+                    <div class="panel-header">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <h3>Nearby Towers</h3>
+                        <i class="fa-solid fa-filter"></i>
+                    </div>
+                    <div class="filter-tabs">
+                        <button class="tab active" onclick="filterTowers('ALL', this)">All (8)</button>
+                        <button class="tab" onclick="filterTowers('MTN', this)">MTN (5)</button>
+                        <button class="tab" onclick="filterTowers('Airtel', this)">Airtel (2)</button>
+                        <button class="tab" onclick="filterTowers('Other', this)">Other (1)</button>
+                    </div>
+                    <div class="tower-list" id="nearby-tower-list-container">
+                        <div class="tower-card active-border">
+                            <div class="tower-rank">1</div>
+                            <i class="fa-solid fa-tower-cell text-green"></i>
+                            <div class="tower-details">
+                                <h4>MTN – Kampala North <span class="badge-best">Best</span></h4>
+                                <p>1.8 km • NE (40°)</p>
+                                <div class="tower-stats">
+                                    <span class="text-green">-82 dBm <small>RSRP</small></span>
+                                    <span>17 dB <small>SINR</small></span>
+                                    <span class="text-green">32.4 Mbps <small>Download</small></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tower-card">
+                            <div class="tower-rank">2</div>
+                            <i class="fa-solid fa-tower-cell text-red"></i>
+                            <div class="tower-details">
+                                <h4>Airtel – Kampala Central</h4>
+                                <p>2.1 km • E (85°)</p>
+                                <div class="tower-stats">
+                                    <span class="text-red">-93 dBm <small>RSRP</small></span>
+                                    <span>9 dB <small>SINR</small></span>
+                                    <span>12.8 Mbps <small>Download</small></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-outline-blue mt-12"><i class="fa-solid fa-layer-group"></i> VIEW ALL TOWERS ON MAP</button>
+                </section>
+
+                <!-- Coverage Map -->
+                <section class="card panel">
+                    <div class="panel-header">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <h3>Coverage Map</h3>
+                        <i class="fa-solid fa-layer-group"></i>
+                    </div>
+                    <div class="filter-tabs">
+                        <button class="tab active-mtn">MTN</button>
+                        <button class="tab">Airtel</button>
+                        <button class="tab">All</button>
+                    </div>
+                    
+                    <div id="leaflet-map-container" class="map-container"></div>
+
+                    <div class="legend-bar">
+                        <span class="gradient-bar"></span>
+                        <div class="legend-labels">
+                            <span>Excellent</span><span>Good</span><span>Fair</span><span>Poor</span><span>Very Poor</span>
+                        </div>
+                    </div>
+                    <div class="map-footer">
+                        <div>
+                            <small>Your Location</small>
+                            <p id="val-map-gps-coords">0.3129° N, 32.5820° E</p>
+                        </div>
+                        <button class="btn btn-blue-sm" onclick="recenterMapOnUser()">RECORD SPOT</button>
+                    </div>
+                </section>
+
+            </div>
+
+        </main>
+    </div>
+
+    <!-- MOBILE BOTTOM NAVIGATION -->
+    <nav class="bottom-nav">
+        <a href="#" class="bottom-item active"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
+        <a href="#" class="bottom-item"><i class="fa-solid fa-map"></i><span>Map</span></a>
+        <a href="#" class="bottom-item action-btn" onclick="triggerManualScan()"><div class="circle-btn"><i class="fa-solid fa-tower-broadcast"></i></div><span>Scan/Connect</span></a>
+        <a href="#" class="bottom-item"><i class="fa-solid fa-clock-rotate-left"></i><span>History</span></a>
+        <a href="#" class="bottom-item"><i class="fa-solid fa-ellipsis"></i><span>More</span></a>
+    </nav>
+
+    <!-- Add capacitor.js right before telephony.js -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script type="module" src="./script.js"></script>
+</body>
+</html>

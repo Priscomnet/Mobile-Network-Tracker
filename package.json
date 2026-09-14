@@ -1,0 +1,25 @@
+{
+  "name": "mobileapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+  "dev": "vite",
+  "build": "vite build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@capacitor/android": "^8.5.0",
+    "@capacitor/cli": "^8.5.0",
+    "@capacitor/core": "^8.5.0",
+    "@capacitor/device": "^8.0.3",
+    "@capacitor/geolocation": "^8.2.2",
+    "@capacitor/network": "^8.0.1"
+  },
+  "devDependencies": {
+    "vite": "^8.2.2"
+  }
+}
